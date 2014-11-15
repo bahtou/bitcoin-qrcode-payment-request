@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+
+<head>
+
+  <title>Payment Request</title>
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+  <script src="/webcomponentsjs/webcomponents.js">
+  </script>
+
+
+  <link rel="import" href="payment-request.html">
+
+  <style>
+  </style>
+
+</head>
+
+<body unresolved>
+
+  <section name="left-side">
+
+    <payment-request>
+      <!-- generate qrcode with bitcoin address -->
+      <!-- qrcode will contain webpage with receipt call -->
+      <!-- need to make an ajax POST here -->
+    </payment-request>
+
+  </section>
+
+
+  <section name="right-side">
+
+  <!-- reciept is generated with amount and payment to populated -->
+  <!-- user can change amount before confirming -->
+  <!-- button to confirm payment sends post to fulfillpayment-->
+
+  </section>
+
+
+
+
+  <core-header-panel>
+
+    <core-toolbar>
+
+      <paper-tabs id="tabs" selected="all" self-end>
+        <paper-tab name="all">All</paper-tab>
+        <paper-tab name="favorites">Favorites</paper-tab>
+      </paper-tabs>
+
+    </core-toolbar>
+
+    <div class="container" layout vertical center>
+      <post-list show="all"></post-list>
+    </div>
+
+  </core-header-panel>
+
+  <script>
+  var tabs = document.querySelector('paper-tabs');
+  var list = document.querySelector('post-list');
+
+  tabs.addEventListener('core-select', function() {
+    list.show = tabs.selected;
+  });
+  </script>
+</body>
+
+</html>
