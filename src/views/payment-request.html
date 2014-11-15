@@ -1,42 +1,57 @@
-<link rel="import" href="components/polymer/polymer.html">
-<link rel="import" href="src/qr-code.html">
-<script src="src/qr.js"></script>
+<link rel="import" href="/polymer/polymer.html">
+<link rel="import" href="/core-ajax/core-ajax.html">
+<link rel="import" href="javascript/components/qrcode/qr-code.html">
+<script src="javascript/components/qrcode/qr.js"></script>
 
-
-
-<polymer-element name="post-list" attributes="show">
+<polymer-element name="payment-request" attributes="show">
   <template>
-    <style>
-    :host {
-      display: block;
-      width: 100%;
-    }
-    post-card {
-      margin-bottom: 30px;
-    }
-    </style>
+    <style></style>
 
-    <post-service id="service" posts="{{posts}}"></post-service>
 
-    <div layout vertical center>
-      <template repeat="{{post in posts}}">
-        <post-card
-          favorite="{{post.favorite}}"
-          on-favorite-tap="{{handleFavorite}}"
-          hidden?="{{show == 'favorites' && !post.favorite}}">
-          <img src="{{post.avatar}}" width="70" height="70">
-          <h2>{{post.username}}</h2>
-          <p>{{post.text}}</p>
-        </post-card>
-      </template>
+    <form role="form" name="payment-request" action="submitAndGeneratePaymentRequest()">
+
+    <input type="text" name="fromWho">
+    <input type="text" name="toWho">
+    <input type="text" name="amount">
+    <textarea name="message" cols="30" rows="10"></textarea>
+
+    <button type="submit">Generate QRcode</button>
+    </form>
+
+    <core-ajax id="ajax"
+      auto
+      url="{{ url }}"
+      method="POST"
+      on-core-response="{{ paymentRequestsLoaded }}"
+      handleAs="json"
+      body="{{ data }}">
+    </core-ajax>
+
+    <div class="content">
+      <input type="text"
+        value="bla bla blaaaaaaaaaahhh"
+        oninput="document.querySelector('qr-code').data = this.value"
+        autofocus
+      />
+      <br><br>
+      <!-- Using Custom Elements -->
+      <qr-code data="{{ bitcoinPayment }}"></qr-code>
     </div>
+
   </template>
 
   <script>
-  Polymer({
-    handleFavorite: function(event, detail, sender) {
-      var post = sender.templateInstance.model.post;
-      this.$.service.setFavorite(post.uid, post.favorite);
+
+  Polymer('payment-request', {
+    submitAndGeneratePaymentRequest: function() {
+      var id = Math.floor(Math.random() * 1000) * 1000;
+      var url = '/payment-request/' + id;
+      var data = formData;
+    },
+    paymentRequestsLoaded: function() {
+      // Make a copy of the loaded data
+      var resp = this.$.ajax.response.slice(0);
+      console.log('response', resp);
     }
   });
   </script>

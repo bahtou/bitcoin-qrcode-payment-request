@@ -1,5 +1,4 @@
 {
-
   // Enforcing
   "bitwise"       : true,       // true: Prohibit bitwise operators (&, |, ^, etc.)
   "camelcase"     : true,       // true: Identifiers must be in camelCase

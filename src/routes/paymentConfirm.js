@@ -5,17 +5,26 @@ var router = express.Router();
 
 var fs = require('fs');
 
-/* POST payment request. */
-router.get('/payment-request/:id', function(req, res) {
-  fs.readFile('../../database/paymentRequest.json', function (err, data) {
+/* POST payment confirmation. */
+router.post('/payment-confirm/:id', function(req, res) {
+  var paymentConfirm = {
+    id: req.params.id,
+    message: req.body.paymentRequest.message || '',
+    amount: req.body.paymentRequest.amount,
+    toWho: req.body.paymentRequest.toWho || '',
+    fromWho: req.body.paymentRequest.fromWho
+  };
+  var store = {
+    id: paymentConfirm
+  };
+
+  fs.writeFile('../../database/paymentConfirm.json', JSON.stringify(store), function (err) {
     if (err) {
       console.log('wtf:err', err);
       throw err;
     }
 
-    var data = JSON.parse(data);
-    data[id]
-    console.log('It\'s saved!');
+    console.log('payment confirm saved!');
     res.send({ status: 'success' });
   });
 
