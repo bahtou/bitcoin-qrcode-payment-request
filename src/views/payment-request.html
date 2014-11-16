@@ -1,58 +1,68 @@
 <link rel="import" href="/polymer/polymer.html">
-<link rel="import" href="/core-ajax/core-ajax.html">
-<link rel="import" href="javascript/components/qrcode/qr-code.html">
-<script src="javascript/components/qrcode/qr.js"></script>
 
-<polymer-element name="payment-request" attributes="show">
+<link rel="import" href="javascripts/components/qrcode/qr-code.html">
+<script src="javascripts/components/qrcode/qr.js"></script>
+
+<link rel="import" href="javascripts/components/ajax/ajax-form.html">
+<script src="javascripts/components/ajax/ajax-form.js"></script>
+
+<polymer-element name="payment-request">
   <template>
-    <style></style>
+
+    <style>
+      .qrCode {
+        display: none;
+      }
+    </style>
 
 
-    <form role="form" name="payment-request" action="submitAndGeneratePaymentRequest()">
+    <h1>payment request</h1>
+    <!-- <form id="fuckyou" is="ajax-form" method="post" action="payment-request/1234"> -->
+    <form is="ajax-form" method="post" action="payment-request/1234">
 
-    <input type="text" name="fromWho">
-    <input type="text" name="toWho">
-    <input type="text" name="amount">
-    <textarea name="message" cols="30" rows="10"></textarea>
+      <label for="fromWhom">From:</label>
+      <input type="text" name="fromWhom">
 
-    <button type="submit">Generate QRcode</button>
+      <br>
+      <label for="toWhom">To:</label>
+      <input type="text" name="toWhom">
+
+      <br>
+      <label for="amount">Amount</label>
+      <input type="text" name="amount">
+
+      <br>
+      <label for="message">Message</label>
+      <textarea name="message" cols="30" rows="10"></textarea>
+
+      <br>
+      <button type="submit" on-click="{{ submit }}">Generate QRcode</button>
+
     </form>
 
-    <core-ajax id="ajax"
-      auto
-      url="{{ url }}"
-      method="POST"
-      on-core-response="{{ paymentRequestsLoaded }}"
-      handleAs="json"
-      body="{{ data }}">
-    </core-ajax>
-
-    <div class="content">
-      <input type="text"
-        value="bla bla blaaaaaaaaaahhh"
-        oninput="document.querySelector('qr-code').data = this.value"
-        autofocus
-      />
-      <br><br>
-      <!-- Using Custom Elements -->
-      <qr-code data="{{ bitcoinPayment }}"></qr-code>
+    <div class="qrCode">
+      <qr-code data="{{ bitcoinData }}"></qr-code>
     </div>
 
   </template>
 
   <script>
-
-  Polymer('payment-request', {
-    submitAndGeneratePaymentRequest: function() {
-      var id = Math.floor(Math.random() * 1000) * 1000;
-      var url = '/payment-request/' + id;
-      var data = formData;
-    },
-    paymentRequestsLoaded: function() {
-      // Make a copy of the loaded data
-      var resp = this.$.ajax.response.slice(0);
-      console.log('response', resp);
-    }
-  });
+    Polymer('payment-request', {
+      formSubmit: function(e) {
+        e.preventDefault();
+        console.log('default averted', e.currentTarget);
+      },
+      submit: function(e) {
+        var url = 'http://localhost:3000/payment-request/1234'
+        this.bitcoinData(url);
+      },
+      bitcoinData: function(url) {
+        console.log('url', url);
+        var qrcode = this.shadowRoot.getElementsByClassName('qrCode')[0];
+        qrcode.style.display = 'block';
+        return url;
+      }
+    });
   </script>
+
 </polymer-element>
